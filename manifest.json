@@ -1,0 +1,17 @@
+{
+  "name": "СберБанк Онлайн",
+  "short_name": "СберБанк",
+  "description": "Безопасный онлайн-банкинг с современными функциями и надёжным обслуживанием",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "Логотип.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}

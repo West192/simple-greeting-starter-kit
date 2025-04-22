@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Безопасный онлайн-банкинг с современными функциями и надёжным обслуживанием">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="СберБанк">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="apple-touch-icon" href="https://softdaily.ru/wp-content/webp-express/webp-images/doc-root/wp-content/uploads/2020/04/Sberbank-Online-100x100.png.webp">
+    <link rel="manifest" href="manifest.json">
+    <title>Админ панель</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .admin-panel {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding-bottom: 100px;
+        }
+
+        .admin-form {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .admin-button {
+            width: 100%;
+            padding: 16px;
+            background: #0A9C47;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .key-list {
+            margin-top: 20px;
+        }
+
+        .key-item {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .key-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .status-active {
+            background: #0A9C47;
+            color: white;
+        }
+
+        .status-inactive {
+            background: #ff3b30;
+            color: white;
+        }
+
+        .key-duration-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #0A9C47;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-panel">
+        <button class="back-button" onclick="window.location.href='index.html'">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <div class="admin-form">
+            <div class="search-header">
+                <div class="avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+            <h1>Админ панель</h1>
+
+            <select id="keyDuration" class="key-duration-select">
+                <option value="1800000">30 минут</option>
+                <option value="86400000">1 день</option>
+                <option value="2592000000">1 месяц</option>
+                <option value="31536000000">1 год</option>
+            </select>
+            
+            <div class="button-group">
+                <button class="admin-button" onclick="generateKey()">Создать ключ доступа</button>
+                <button class="admin-button" onclick="window.location.href='user.html'">Персональные данные</button>
+                <button class="admin-button" onclick="window.location.href='create-history.html'">Создать транзакцию</button>
+            </div>
+
+            <div class="key-list" id="keyList">
+                <!-- Список ключей будет добавлен здесь -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateRandomKey(length = 15) {
+            const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let key = '';
+            for (let i = 0; i < length; i++) {
+                key += charset.charAt(Math.floor(Math.random() * charset.length));
+            }
+            return key;
+        }
+
+        function generateKey() {
+            const duration = parseInt(document.getElementById('keyDuration').value);
+            const newKey = generateRandomKey();
+            const expiresAt = new Date(Date.now() + duration).toISOString();
+            
+            let keys = JSON.parse(localStorage.getItem('accessKeys') || '[]');
+            
+            // Создаем новый ключ
+            const keyData = {
+                key: newKey,
+                createdAt: new Date().toISOString(),
+                expiresAt: expiresAt,
+                active: true,
+                deviceId: null
+            };
+            
+            keys.push(keyData);
+            localStorage.setItem('accessKeys', JSON.stringify(keys));
+            updateKeyList();
+            
+            // Копируем ключ в буфер обмена
+            navigator.clipboard.writeText(newKey).then(() => {
+                alert(`Новый ключ создан и скопирован в буфер обмена: ${newKey}\nСрок действия: ${new Date(expiresAt).toLocaleString()}`);
+            }).catch(() => {
+                alert(`Новый ключ создан: ${newKey}\nСрок действия: ${new Date(expiresAt).toLocaleString()}`);
+            });
+        }
+
+        function updateKeyList() {
+            const keyList = document.getElementById('keyList');
+            const keys = JSON.parse(localStorage.getItem('accessKeys') || '[]');
+            
+            keyList.innerHTML = '<h2>Список ключей:</h2>';
+            
+            keys.forEach((keyData, index) => {
+                const isExpired = new Date(keyData.expiresAt) < new Date();
+                const isActive = keyData.active && !isExpired;
+                
+                const keyItem = document.createElement('div');
+                keyItem.className = 'key-item';
+                keyItem.innerHTML = `
+                    <div>
+                        <div>Ключ: ${keyData.key}</div>
+                        <div>Истекает: ${new Date(keyData.expiresAt).toLocaleString()}</div>
+                        ${keyData.deviceId ? `<div>Устройство: ${keyData.deviceId}</div>` : ''}
+                    </div>
+                    <span class="key-status ${isActive ? 'status-active' : 'status-inactive'}">
+                        ${isActive ? 'Активен' : 'Неактивен'}
+                    </span>
+                `;
+                keyList.appendChild(keyItem);
+            });
+        }
+
+        window.onload = function() {
+            updateKeyList();
+        };
+    </script>
+</body>
+</html>

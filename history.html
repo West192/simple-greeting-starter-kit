@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Безопасный онлайн-банкинг с современными функциями и надёжным обслуживанием">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="СберБанк">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="apple-touch-icon" href="https://softdaily.ru/wp-content/webp-express/webp-images/doc-root/wp-content/uploads/2020/04/Sberbank-Online-100x100.png.webp">
+    <link rel="manifest" href="manifest.json">
+    <title>История</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f1f1f1;
+            padding-bottom: 83px;
+            width: 100vw;
+            overflow-x: hidden;
+        }
+
+        .app {
+            position: relative;
+            width: 100vw;
+            max-width: 100vw;
+            margin: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header-image {
+            width: 100%;
+            display: block;
+        }
+
+        .filters {
+            display: flex;
+            gap: calc(12 * (100vw / 390));
+            padding: 0 calc(16 * (100vw / 390));
+            margin-bottom: calc(10 * (100vw / 390));
+            overflow-x: auto;
+            background: #f1f1f1;
+            padding-bottom: 1px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .filters::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-button {
+            background: #e8e8e8;
+            border: none;
+            padding: calc(8 * (100vw / 390)) calc(16 * (100vw / 390));
+            border-radius: calc(16 * (100vw / 390));
+            white-space: nowrap;
+            font-size: calc(14 * (100vw / 390));
+            color: #333;
+        }
+
+        .transactions {
+            flex: 1;
+            overflow-y: auto;
+            padding: calc(6 * (100vw / 390));
+            margin-bottom: 83px;
+        }
+
+        .date-group {
+            background: white;
+            border-radius: calc(16 * (100vw / 390));
+            margin-bottom: calc(10 * (100vw / 390));
+            overflow: hidden;
+        }
+
+        .date-header {
+            font-size: calc(18 * (100vw / 390));
+            font-weight: bold;
+            padding: calc(16 * (100vw / 390));
+            background: white;
+            color: rgb(0, 0, 0);
+            margin: 0;
+        }
+
+        .transaction {
+            display: flex;
+            align-items: center;
+            padding: calc(16 * (100vw / 390));
+            background: white;
+            cursor: pointer;
+        }
+
+        .transaction-icon {
+            width: calc(35 * (100vw / 390));
+            height: calc(35 * (100vw / 390));
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: calc(14 * (100vw / 390));
+        }
+
+        .transaction-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .transaction-details {
+            flex: 1;
+        }
+
+        .transaction-name {
+            font-weight: 550;
+            margin-bottom: calc(4 * (100vw / 390));
+            color: rgb(0, 0, 0);
+            font-size: calc(14.2 * (100vw / 390));
+        }
+
+        .transaction-type {
+            color: #666;
+            font-size: calc(12.5 * (100vw / 390));
+        }
+
+        .transaction-amount {
+            font-weight: 450;
+            color: rgb(0, 0, 0);
+            font-size: calc(16 * (100vw / 390));
+        }
+
+        .transaction-amount.positive {
+            color: #12902f;
+        }
+
+        .navigation-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        
+        .navigation-image {
+            width: 100%;
+            display: block;
+        }
+        
+        .nav-links {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .nav-link {
+            flex: 1;
+            height: 100%;
+        }
+
+        @media (min-aspect-ratio: 1/1) {
+            .filter-button {
+                font-size: calc(14 * (100vh / 844));
+                padding: calc(8 * (100vh / 844)) calc(16 * (100vh / 844));
+            }
+            
+            .date-header {
+                font-size: calc(18 * (100vh / 844));
+            }
+            
+            .transaction-name {
+                font-size: calc(14.2 * (100vh / 844));
+            }
+            
+            .transaction-type {
+                font-size: calc(12.5 * (100vh / 844));
+            }
+            
+            .transaction-amount {
+                font-size: calc(16 * (100vh / 844));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <img src="Шапка&#32;истории.jpg" alt="Header" class="header-image">
+        <div class="search-header">
+        </div>
+
+        <div class="filters">
+            <button class="filter-button">Что показывать</button>
+            <button class="filter-button">Период</button>
+            <button class="filter-button">Карта или счёт</button>
+        </div>
+
+        <div class="transactions" id="transactionsContainer">
+            <!-- Dynamic content will be inserted here -->
+        </div>
+    </div>
+
+    <div class="navigation-container">
+        <img src="навигация&#32;история.jpg" alt="Навигация" class="navigation-image">
+        <div class="nav-links">
+            <a href="index.html" class="nav-link"></a>
+            <a href="assistant.html" class="nav-link"></a>
+            <a href="payments.html" class="nav-link"></a>
+            <a href="history.html" class="nav-link"></a>
+        </div>
+    </div>
+
+    <script>
+        function formatDate(date) {
+            const days = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+            const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+            
+            return `${date.getDate()} ${months[date.getMonth()]}, ${days[date.getDay()]}`;
+        }
+
+        function formatAmount(amount, isIncoming = false) {
+            const formattedAmount = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+            return isIncoming ? `+${formattedAmount}` : formattedAmount;
+        }
+
+        function getDateHeader(transactionDate) {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            today.setHours(0, 0, 0, 0);
+            yesterday.setHours(0, 0, 0, 0);
+            const compareDate = new Date(transactionDate);
+            compareDate.setHours(0, 0, 0, 0);
+            
+            if (compareDate.getTime() === today.getTime()) {
+                return 'Сегодня';
+            } else if (compareDate.getTime() === yesterday.getTime()) {
+                return 'Вчера';
+            } else {
+                return formatDate(compareDate);
+            }
+        }
+
+        function updateHistory() {
+            const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+            const transactionsContainer = document.getElementById('transactionsContainer');
+            
+            transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const groupedTransactions = {};
+            transactions.forEach(entry => {
+                const dateHeader = getDateHeader(new Date(entry.date));
+                if (!groupedTransactions[dateHeader]) {
+                    groupedTransactions[dateHeader] = [];
+                }
+                groupedTransactions[dateHeader].push(entry);
+            });
+
+            transactionsContainer.innerHTML = '';
+
+            Object.keys(groupedTransactions).forEach(dateHeader => {
+                const transactions = groupedTransactions[dateHeader];
+                if (transactions.length > 0 || dateHeader === 'Сегодня') {
+                    const dateGroupHTML = `
+                        <div class="date-group">
+                            <h2 class="date-header">${dateHeader}</h2>
+                            ${transactions.map(entry => {
+                                let displayType = entry.type;
+                                if (entry.isIncoming && entry.sbpNumber) {
+                                    displayType = 'Перевод по СБП';
+                                }
+                                return `
+                                    <div class="transaction" onclick="showTransactionDetails('${entry.id}', '${displayType}')">
+                                        <div class="transaction-icon">
+                                            <img src="https://cd76796.tw1.ru/${entry.isIncoming&#32;?&#32;'Лого&#32;входящий.jpeg'&#32;:&#32;'Лого&#32;транзакции.jpg'}" alt="Transaction Logo">
+                                        </div>
+                                        <div class="transaction-details">
+                                            <div class="transaction-name">${entry.recipientName}</div>
+                                            <div class="transaction-type">${displayType}</div>
+                                        </div>
+                                        <div class="transaction-amount ${entry.isIncoming ? 'positive' : ''}">${formatAmount(entry.amount, entry.isIncoming)} ₽</div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                    transactionsContainer.innerHTML += dateGroupHTML;
+                }
+            });
+        }
+
+        function showTransactionDetails(transactionId, type) {
+            if (type === 'Перевод по СБП') {
+                window.location.href = `checksbp.html?id=${transactionId}`;
+            } else if (type === 'Клиенту Сбера') {
+                window.location.href = `checksber.html?id=${transactionId}`;
+            } else if (type === 'Входящий перевод') {
+                const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+                const transaction = transactions.find(t => t.id.toString() === transactionId.toString());
+                if (transaction && transaction.sbpNumber) {
+                    window.location.href = `checksbp.html?id=${transactionId}`;
+                } else {
+                    window.location.href = `checksber.html?id=${transactionId}`;
+                }
+            }
+        }
+
+        window.onload = updateHistory;
+    </script>
+</body>
+</html>
